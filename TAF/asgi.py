@@ -1,5 +1,5 @@
 """
-ASGI config for my_DB project.
+ASGI config for TAF project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'my_DB.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'TAF.settings')
 
 application = get_asgi_application()

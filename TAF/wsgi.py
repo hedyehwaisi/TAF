@@ -1,5 +1,5 @@
 """
-WSGI config for my_DB project.
+WSGI config for TAF project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'my_DB.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'TAF.settings')
 
 application = get_wsgi_application()
