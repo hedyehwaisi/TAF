@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import RegexValidator
+from django.conf import settings
 from django.utils import timezone
 
 class User(models.Model):
@@ -23,3 +24,72 @@ class User(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+
+class Student(models.Model):
+    student_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    gpa = models.DecimalField(max_digits=4, decimal_places=2)
+    major = models.CharField(max_length=100)
+    entry_year = models.PositiveIntegerField()
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Student: {self.user.first_name} {self.user.last_name}, Major: {self.major}, GPA: {self.gpa}"
+
+class Department(models.Model):
+    dept_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+class Professor(models.Model):
+    prof_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    dept = models.ForeignKey(Department, on_delete=models.CASCADE)
+    rank = models.CharField(max_length=50)
+    study_field = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"Professor: {self.user.first_name} {self.user.last_name}, Rank: {self.rank}, Department: {self.dept.name}"
+
+class TA(models.Model):
+    TA_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"TA: {self.user.first_name} {self.user.last_name}"
+
+    # @property
+    # def score(self):
+    #     # Assuming there is a Rating model where ratings are stored
+    #     # Example: Rating model has fields 'ta' (ForeignKey to TA), 'score' (Integer)
+    #     total_score = Rating.objects.filter(ta=self).aggregate(total=models.Sum('score'))['total']
+    #     return total_score if total_score is not None else 0
+
+class Course(models.Model):
+    course_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    unit = models.IntegerField()
+    activity = models.TextField()
+
+    def __str__(self):
+        return f"{self.name} ({self.unit} units)"
+    
+from django.db import models
+
+class Group(models.Model):
+    student = models.ForeignKey('Student', on_delete=models.CASCADE)
+    course = models.ForeignKey('Course', on_delete=models.CASCADE)
+    professor = models.ForeignKey('Professor', on_delete=models.CASCADE)
+    class_number = models.CharField(max_length=10)
+    semester = models.CharField(max_length=10)
+
+    class Meta:
+        unique_together = (('student', 'course', 'professor'),)
+
+    def __str__(self):
+        return f"{self.course.name} - Class {self.class_number}, {self.semester}"
+
