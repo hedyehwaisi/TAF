@@ -3,7 +3,8 @@
 # # Create your views here.
 
 from django.shortcuts import render, redirect
-from .forms import ProfessorForm, CourseForm, TAForm, StudentForm
+from .forms import ProfessorForm, CourseForm, TAForm, StudentForm, Professor, Course, TA, Student
+
 
 def add_professor(request):
     if request.method == 'POST':
@@ -47,3 +48,20 @@ def add_student(request):
 
 def success(request):
     return render(request, 'success.html')
+
+
+def view_professors(request):
+    professors = Professor.objects.all()
+    return render(request, 'view_professors.html', {'professors': professors})
+
+def view_courses(request):
+    courses = Course.objects.all()
+    return render(request, 'view_courses.html', {'courses': courses})
+
+def view_tas(request):
+    tas = TA.objects.all()
+    return render(request, 'view_tas.html', {'tas': tas})
+
+def view_students(request):
+    students = Student.objects.all()
+    return render(request, 'view_students.html', {'students': students})
