@@ -86,6 +86,8 @@ class Group(models.Model):
     professor = models.ForeignKey('Professor', on_delete=models.CASCADE)
     class_number = models.CharField(max_length=10)
     semester = models.CharField(max_length=10)
+    prof_grade = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    TA_grade = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
 
     class Meta:
         unique_together = (('student', 'course', 'professor'),)
