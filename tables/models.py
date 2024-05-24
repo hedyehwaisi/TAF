@@ -1,7 +1,9 @@
 from django.db import models
 
 class Professor(models.Model):
-    prof_id = models.CharField(primary_key = True)
+    prof_id = models.CharField(primary_key = True, unique = True)
+    # use_id = models.CharField(primary_key = True, unique = True)
+    # dept_id = models.CharField(primary_key = True, unique = True)
     rank = models.CharField(max_length=50)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
