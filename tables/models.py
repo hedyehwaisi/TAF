@@ -11,6 +11,14 @@ class Professor(models.Model):
     
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+class Department(models.Model):
+    dept_id = models.CharField(primary_key = True, unique = True)
+    dept_name = models.CharField(max_length=50)
+
+    
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
+
 
 class Course(models.Model):
     title = models.CharField(max_length=100)
@@ -38,6 +46,14 @@ class Student(models.Model):
         return f'{self.first_name} {self.last_name}'
 
 class Enrollment(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    date_enrolled = models.DateField()
+
+    class Meta:
+        unique_together = ('student', 'course')
+
+class Assistance(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     date_enrolled = models.DateField()
