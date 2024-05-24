@@ -95,3 +95,14 @@ class Group(models.Model):
     def __str__(self):
         return f"{self.course.name} - Class {self.class_number}, {self.semester}"
 
+class Assistance(models.Model):
+    TA = models.ForeignKey('TA', on_delete=models.CASCADE)
+    group = models.ForeignKey('Group', on_delete=models.CASCADE)
+    TA_feedback = models.TextField(blank=True, null=True)
+    is_head_TA = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = (('TA', 'group'),)
+
+    def __str__(self):
+        return f"Assistance by {self.TA.user.first_name} for Group {self.group.id}"
