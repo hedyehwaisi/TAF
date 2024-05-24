@@ -30,6 +30,7 @@ class Course(models.Model):
         return self.title
 
 class TA(models.Model):
+    TA_id = models.CharField(max_length=50)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
