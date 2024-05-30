@@ -3,17 +3,17 @@ from django.core.validators import RegexValidator
 from django.conf import settings
 from django.utils import timezone
 
-class User(models.Model):
+class Member(models.Model):
     GENDER_CHOICES = [
         ('M', 'Male'),
         ('F', 'Female'),
     ]
 
-    user_id = models.AutoField(primary_key=True)
+    member_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     email = models.EmailField(unique=True)
-    phone_regex = RegexValidator(regex=r'^(09|\+989)\d{8}$', message="Phone number must be in the format '09xxxxxxxx' or '+989xxxxxxxx'.")
+    phone_regex = RegexValidator(regex=r'^(09|\+989)\d{9}$', message="Phone number must be in the format '09xxxxxxxx' or '+989xxxxxxxx'.")
     phone = models.CharField(validators=[phone_regex], max_length=13, unique=True)
     password = models.CharField(max_length=128)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -28,14 +28,14 @@ class User(models.Model):
 
 class Student(models.Model):
     student_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    member = models.ForeignKey('Member', on_delete=models.CASCADE)
     gpa = models.DecimalField(max_digits=4, decimal_places=2)
     major = models.CharField(max_length=100)
     entry_year = models.PositiveIntegerField()
-    updated_at = models.DateTimeField(auto_now=True)
+    # updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Student: {self.user.first_name} {self.user.last_name}, Major: {self.major}, GPA: {self.gpa}"
+        return f"Student: {self.member.first_name} {self.member.last_name}, Major: {self.major}, GPA: {self.gpa}"
 
 class Department(models.Model):
     dept_id = models.AutoField(primary_key=True)
@@ -47,20 +47,20 @@ class Department(models.Model):
 
 class Professor(models.Model):
     prof_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    dept = models.ForeignKey(Department, on_delete=models.CASCADE)
+    member = models.ForeignKey('Member', on_delete=models.CASCADE)
+    dept = models.ForeignKey('Department', on_delete=models.CASCADE)
     rank = models.CharField(max_length=50)
     study_field = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"Professor: {self.user.first_name} {self.user.last_name}, Rank: {self.rank}, Department: {self.dept.name}"
+        return f"Professor: {self.member.first_name} {self.member.last_name}, Rank: {self.rank}, Department: {self.dept.name}"
 
 class TA(models.Model):
     TA_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    member = models.ForeignKey('Member', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"TA: {self.user.first_name} {self.user.last_name}"
+        return f"TA: {self.member.first_name} {self.member.last_name}"
 
     # @property
     # def score(self):
@@ -88,19 +88,19 @@ class Group(models.Model):
     TA_grade = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
 
     class Meta:
-        unique_together = (('student', 'course', 'professor'),)
+        unique_together = ((student, course, professor),)
 
     def __str__(self):
         return f"{self.course.name} - Class {self.class_number}, {self.semester}"
 
 class Assistance(models.Model):
-    TA = models.ForeignKey('TA', on_delete=models.CASCADE)
-    group = models.ForeignKey('Group', on_delete=models.CASCADE)
+    TA = models.ForeignKey(TA, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
     TA_feedback = models.TextField(blank=True, null=True)
     is_head_TA = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = (('TA', 'group'),)
+        unique_together = ((TA, Group),)
 
     def __str__(self):
-        return f"Assistance by {self.TA.user.first_name} for Group {self.group.id}"
+        return f"Assistance by {self.TA.member.first_name} for Group {self.group.id}"
