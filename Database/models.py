@@ -61,6 +61,7 @@ class Student(models.Model):
         except RecursionError:
             return "Professor: Recursion Error"
 
+
 class Professor(models.Model):
     member = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True)
     profRank = models.CharField(max_length=50)
@@ -85,15 +86,14 @@ class TA(models.Model):
     @property
     def computed_id(self):
         return f"{self.member.member_id}03"
-    
+
     @property
-    def score_comuting(self):
-        total_score = Grade.objects.filter(ta=self).aggregate(total=models.Sum('stu-to-ta-rate'))['total']
+    def score_computing(self):
+        total_score = Grade.objects.filter(ta=self).aggregate(total=models.Sum('stu_to_ta_rate'))['total']
         self.score = total_score
         return total_score if total_score is not None else 0
 
     def __str__(self):
-        
         try:
             return f"TA: {self.member.first_name} {self.member.last_name}, ID: {self.computed_id}, Score: {self.score}"
         except RecursionError:
@@ -107,7 +107,6 @@ class Course(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.unit} units)"
-
 
 
 class Group(models.Model):
@@ -127,23 +126,7 @@ class Group(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.course.title} - Class {self.class_addr}, {self.semester}"
-
-
-
-class GroupActivities(models.Model):
-    
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    date = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = (('group', 'date'),)
-
-    def __str__(self):
-        return f"{self.title} - Group {self.group}"
-
-
+        return f"{self.course.title} - Class {self.class_addr}, {self.year_semester}"
 
 
 class Assistance(models.Model):
@@ -172,10 +155,10 @@ class Grade(models.Model):
     ta = models.ForeignKey(TA, on_delete=models.CASCADE)
     prof_grade = models.IntegerField()
     ta_grade = models.IntegerField()
+    stu_to_ta_rate = models.IntegerField()
     semester = models.CharField(max_length=10)
     year = models.CharField(max_length=10)
     year_semester = models.CharField(max_length=20, editable=False)
-    stu_to_ta_rate = models.IntegerField()
 
     class Meta:
         unique_together = (('student', 'group', 'ta', 'year_semester'),)
@@ -188,9 +171,22 @@ class Grade(models.Model):
         return f"Grade for {self.student.member.first_name} in Group {self.group.id}"
 
 
+class GroupActivities(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = (('group', 'date'),)
+
+    def __str__(self):
+        return f"{self.title} - Group {self.group}"
+
+
 class InviteRequest(models.Model):
     ta = models.ForeignKey(TA, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    prof_to_TA_feedback = models.IntegerField()
     ta_request_accepted = models.BooleanField(default=False)
     prof_invite_accepted = models.BooleanField(default=False)
     semester = models.CharField(max_length=10)
