@@ -10,7 +10,6 @@ admin.site.register(Member)
 admin.site.register(InviteRequest)
 admin.site.register(MemberPhone)
 admin.site.register(MemberEmail)
-
 admin.site.register(CourseActivities)
 admin.site.register(Group)
 admin.site.register(Professor)
