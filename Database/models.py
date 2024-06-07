@@ -109,14 +109,6 @@ class Course(models.Model):
         return f"{self.title} ({self.unit} units)"
 
 
-class CourseActivities(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-
-
-    def __str__(self):
-        return f"{self.title}"
-
 
 class Group(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -136,6 +128,22 @@ class Group(models.Model):
 
     def __str__(self):
         return f"{self.course.title} - Class {self.class_addr}, {self.semester}"
+
+
+
+class GroupActivities(models.Model):
+    
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = (('group', 'date'),)
+
+    def __str__(self):
+        return f"{self.title} - Group {self.group}"
+
+
 
 
 class Assistance(models.Model):
