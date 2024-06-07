@@ -1,106 +1,200 @@
 from django.db import models
 from django.core.validators import RegexValidator
-from django.conf import settings
 from django.utils import timezone
+
 
 class Member(models.Model):
     GENDER_CHOICES = [
-        ('M', 'Male'),
-        ('F', 'Female'),
+        ('male', 'Male'),
+        ('female', 'Female'),
     ]
 
     member_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
-    email = models.EmailField(unique=True)
-    phone_regex = RegexValidator(regex=r'^(09|\+989)\d{9}$', message="Phone number must be in the format '09xxxxxxxx' or '+989xxxxxxxx'.")
-    phone = models.CharField(validators=[phone_regex], max_length=13, unique=True)
     password = models.CharField(max_length=128)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     linkedIn_addr = models.URLField(blank=True, null=True)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     is_admin = models.BooleanField(default=False)
+    objects = models.Manager()
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
 
+class MemberPhone(models.Model):
+    member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    phone_regex = RegexValidator(regex=r'^(09|\+989)\d{9}$',
+                                 message="Phone number must be in the format '09xxxxxxxxx' or '+989xxxxxxxxx'.")
+    phone = models.CharField(validators=[phone_regex], max_length=13, unique=True)
+    phone_type = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.phone_type}: {self.phone}"
+
+
+class MemberEmail(models.Model):
+    member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    email = models.EmailField(unique=True)
+    email_type = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.email_type}: {self.email}"
+
+
 class Student(models.Model):
-    student_id = models.AutoField(primary_key=True)
-    member = models.ForeignKey('Member', on_delete=models.CASCADE)
+    member = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True)
     gpa = models.DecimalField(max_digits=4, decimal_places=2)
     major = models.CharField(max_length=100)
     entry_year = models.PositiveIntegerField()
-    # updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def computed_id(self):
+        return f"{self.member.member_id}01"
 
     def __str__(self):
-        return f"Student: {self.member.first_name} {self.member.last_name}, Major: {self.major}, GPA: {self.gpa}"
-
-class Department(models.Model):
-    dept_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
-
-    def __str__(self):
-        return self.name
+        # Safeguard against potential recursive calls
+        try:
+            return f"Student: {self.member.first_name} {self.member.last_name}, Major: {self.major}, GPA: {self.gpa}, ID: {self.computed_id}"
+        except RecursionError:
+            return "Professor: Recursion Error"
 
 class Professor(models.Model):
-    prof_id = models.AutoField(primary_key=True)
-    member = models.ForeignKey('Member', on_delete=models.CASCADE)
-    dept = models.ForeignKey('Department', on_delete=models.CASCADE)
-    rank = models.CharField(max_length=50)
-    study_field = models.CharField(max_length=100)
+    member = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True)
+    profRank = models.CharField(max_length=50)
+    research_field = models.CharField(max_length=100)
+
+    @property
+    def computed_id(self):
+        return f"{self.member.member_id}02"
 
     def __str__(self):
-        return f"Professor: {self.member.first_name} {self.member.last_name}, Rank: {self.rank}, Department: {self.dept.name}"
+        # Safeguard against potential recursive calls
+        try:
+            return f"Professor: {self.member.first_name} {self.member.last_name}, Rank: {self.profRank}, Research: {self.research_field}, ID: {self.computed_id}"
+        except RecursionError:
+            return "Professor: Recursion Error"
+
 
 class TA(models.Model):
-    TA_id = models.AutoField(primary_key=True)
-    member = models.ForeignKey('Member', on_delete=models.CASCADE)
+    member = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True)
+    score = models.IntegerField(default=0)
+
+    @property
+    def computed_id(self):
+        return f"{self.member.member_id}03"
+    
+    @property
+    def score_comuting(self):
+        total_score = Grade.objects.filter(ta=self).aggregate(total=models.Sum('stu-to-ta-rate'))['total']
+        self.score = total_score
+        return total_score if total_score is not None else 0
 
     def __str__(self):
-        return f"TA: {self.member.first_name} {self.member.last_name}"
+        
+        try:
+            return f"TA: {self.member.first_name} {self.member.last_name}, ID: {self.computed_id}, Score: {self.score}"
+        except RecursionError:
+            return "TA: Recursion Error"
 
-    # @property
-    # def score(self):
-    #     # Assuming there is a Rating model where ratings are stored
-    #     # Example: Rating model has fields 'ta' (ForeignKey to TA), 'score' (Integer)
-    #     total_score = Rating.objects.filter(ta=self).aggregate(total=models.Sum('score'))['total']
-    #     return total_score if total_score is not None else 0
 
 class Course(models.Model):
     course_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
+    title = models.CharField(max_length=100)
     unit = models.IntegerField()
-    activity = models.TextField()
 
     def __str__(self):
-        return f"{self.name} ({self.unit} units)"
-    
+        return f"{self.title} ({self.unit} units)"
+
+
+class CourseActivities(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+
+
+    def __str__(self):
+        return f"{self.title}"
+
+
 class Group(models.Model):
-    student = models.ForeignKey('Student', on_delete=models.CASCADE)
-    course = models.ForeignKey('Course', on_delete=models.CASCADE)
-    professor = models.ForeignKey('Professor', on_delete=models.CASCADE)
-    class_number = models.CharField(max_length=10)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
+    class_addr = models.CharField(max_length=10)
+    department_name = models.CharField(max_length=100, default='Science Department')
     semester = models.CharField(max_length=10)
-    prof_grade = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
-    TA_grade = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    year = models.CharField(max_length=10)
+    year_semester = models.CharField(max_length=20, editable=False)
 
     class Meta:
-        unique_together = ((student, course, professor),)
+        unique_together = (('course', 'professor', 'year_semester'),)
+
+    def save(self, *args, **kwargs):
+        self.year_semester = f"{self.year}{self.semester}"
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.course.name} - Class {self.class_number}, {self.semester}"
+        return f"{self.course.title} - Class {self.class_addr}, {self.semester}"
+
 
 class Assistance(models.Model):
-    TA = models.ForeignKey(TA, on_delete=models.CASCADE)
+    ta = models.ForeignKey(TA, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    TA_feedback = models.TextField(blank=True, null=True)
-    is_head_TA = models.BooleanField(default=False)
+    ta_feedback = models.TextField(blank=True, null=True)
+    is_head_ta = models.BooleanField(default=False)
+    semester = models.CharField(max_length=10)
+    year = models.CharField(max_length=10)
+    year_semester = models.CharField(max_length=20, editable=False)
 
     class Meta:
-        unique_together = ((TA, Group),)
+        unique_together = (('ta', 'group', 'year_semester'),)
+
+    def save(self, *args, **kwargs):
+        self.year_semester = f"{self.year}{self.semester}"
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Assistance by {self.TA.member.first_name} for Group {self.group.id}"
+        return f"Assistance by {self.ta.member.first_name} for Group {self.group.id}"
+
+
+class Grade(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    ta = models.ForeignKey(TA, on_delete=models.CASCADE)
+    prof_grade = models.IntegerField(max=20, min=0)
+    ta_grade = models.IntegerField(max=20, min=0)
+    semester = models.CharField(max_length=10)
+    year = models.CharField(max_length=10)
+    year_semester = models.CharField(max_length=20, editable=False)
+    stu_to_ta_rate = models.IntegerField(max=20, min=0)
+
+    class Meta:
+        unique_together = (('student', 'group', 'ta', 'year_semester'),)
+
+    def save(self, *args, **kwargs):
+        self.year_semester = f"{self.year}{self.semester}"
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Grade for {self.student.member.first_name} in Group {self.group.id}"
+
+
+class InviteRequest(models.Model):
+    ta = models.ForeignKey(TA, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    ta_request_accepted = models.BooleanField(default=False)
+    prof_invite_accepted = models.BooleanField(default=False)
+    semester = models.CharField(max_length=10)
+    year = models.CharField(max_length=10)
+    year_semester = models.CharField(max_length=20, editable=False)
+
+    class Meta:
+        unique_together = (('group', 'ta', 'year_semester'),)
+
+    def save(self, *args, **kwargs):
+        self.year_semester = f"{self.year}{self.semester}"
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Invite Request for TA {self.ta.member.first_name} in Group {self.group.id}"

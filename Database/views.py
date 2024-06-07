@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 
-def members(request):
-    return HttpResponse("Hello world!")
+# Create your views here.
+
+def Hello_there(request):
+    return HttpResponse("Hello there!")
