@@ -162,12 +162,12 @@ class Grade(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     ta = models.ForeignKey(TA, on_delete=models.CASCADE)
-    prof_grade = models.IntegerField(max=20, min=0)
-    ta_grade = models.IntegerField(max=20, min=0)
+    prof_grade = models.IntegerField()
+    ta_grade = models.IntegerField()
     semester = models.CharField(max_length=10)
     year = models.CharField(max_length=10)
     year_semester = models.CharField(max_length=20, editable=False)
-    stu_to_ta_rate = models.IntegerField(max=20, min=0)
+    stu_to_ta_rate = models.IntegerField()
 
     class Meta:
         unique_together = (('student', 'group', 'ta', 'year_semester'),)
