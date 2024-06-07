@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Members</title>
+</head>
+<body>
+<h2>Members List</h2>
+<ul>
+    {% for member in members %}
+    <li><a href="{% url 'member' member.member_id %}">{{ member.member_id }} {{ member.first_name }} {{ member.last_name }}</a></li>
+    {% endfor %}
+</ul>
+
+<!-- Add the link to create a new member -->
+<a href="{% url 'create_member' %}">Add New Member</a>
+
+</body>
+</html>

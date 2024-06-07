@@ -9,6 +9,12 @@ class Member(models.Model):
         ('female', 'Female'),
     ]
 
+    ROLE_CHOICES = [
+        ('student', 'Student'),
+        ('ta', 'TA'),
+        ('professor', 'Professor'),
+    ]
+
     member_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
@@ -18,7 +24,7 @@ class Member(models.Model):
     linkedIn_addr = models.URLField(blank=True, null=True)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     is_admin = models.BooleanField(default=False)
-    objects = models.Manager()
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='student')
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
