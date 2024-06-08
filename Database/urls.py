@@ -15,17 +15,28 @@ urlpatterns = [
     path('edit_member/<int:member_id>/', views.edit_member, name='edit_member'),
     path('delete_member/<int:member_id>/', views.delete_member, name='delete_member'),
 
+    path('lists/member_list/', views.member_list, name='member_list'),
+    path('lists/ta_list/', views.ta_list, name='ta_list'),
+    path('lists/professor_list/', views.professor_list, name='professor_list'),
+    path('lists/student_list/', views.student_list, name='student_list'),
+    # path('member_phones/', views.member_phone_list, name='member_phone_list'),
+    # path('member_emails/', views.member_email_list, name='member_email_list'),
+
     # Course URLs
     # path('create_course/', views.create_course, name='create_course'),
     path('courses/', views.courses, name='courses'),
     path('edit_course/<int:course_id>/', views.edit_course, name='edit_course'),
     path('delete_course/<int:course_id>/', views.delete_course, name='delete_course'),
 
+    path('lists/course_list/', views.course_list, name='course_list'),
+
     # Group URLs
     # path('create_group/', views.create_group, name='create_group'),
     path('groups/', views.groups, name='groups'),
     path('edit_group/<int:group_id>/', views.edit_group, name='edit_group'),
     path('delete_group/<int:group_id>/', views.delete_group, name='delete_group'),
+
+    path('lists/group_list/', views.group_list, name='group_list'),
 
     # Assistance URLs
     # path('create_assistance/', views.create_assistance, name='create_assistance'),

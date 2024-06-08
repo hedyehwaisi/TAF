@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Member Phones</title>
+</head>
+<body>
+    <h2>Member Phones</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Member</th>
+                <th>Phone</th>
+                <th>Phone Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member_phone in member_phones %}
+            <tr>
+                <td>{{ member_phone.member }}</td>
+                <td>{{ member_phone.phone }}</td>
+                <td>{{ member_phone.phone_type }}</td>
+            {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

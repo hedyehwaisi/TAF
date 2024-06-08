@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Professors</title>
+</head>
+<body>
+    <h2>Professors</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Member ID</th>
+                <th>Name</th>
+                <th>Research Field</th>
+                <th>Rank</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for professor in professors %}
+            <tr>
+                <td>{{ professor.member.member_id }}</td>
+                <td>{{ professor.member.first_name }} {{ professor.member.last_name }}</td>
+                <td>{{ professor.research_field }}</td>
+                <td>{{ professor.profRank }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

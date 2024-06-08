@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Groups</title>
+</head>
+<body>
+    <h2>Groups</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Professor</th>
+                <th>Class Address</th>
+                <th>Department</th>
+                <th>Semester</th>
+                <th>Year</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for group in groups %}
+            <tr>
+                <td>{{ group.course }}</td>
+                <td>{{ group.professor }}</td>
+                <td>{{ group.class_addr }}</td>
+                <td>{{ group.department }}</td>
+                <td>{{ group.semester }}</td>
+                <td>{{ group.year }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

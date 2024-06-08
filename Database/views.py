@@ -104,6 +104,19 @@ def member(request, member_id):
     return render(request, 'member.html', {'member': member})
 
 
+def member_list(request):
+    members = Member.objects.all()
+    return render(request, 'member_list.html', {'members': members})
+
+
+# def member_phone_list(request):
+#     member_phones = MemberPhone.objects.all()
+#     return render(request, 'member_phone_list.html', {'member_phones': member_phones})
+
+# def member_email_list(request):
+#     member_emails = MemberEmail.objects.all()
+#     return render(request, 'member_email_list.html', {'member_emails': member_emails})
+
 def create_student(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
     if request.method == 'POST':
@@ -116,6 +129,11 @@ def create_student(request, member_id):
     else:
         form = StudentForm()
     return render(request, 'new_student.html', {'form': form})
+
+
+def student_list(request):
+    students = Student.objects.all()
+    return render(request, 'student_list.html', {'students': students})
 
 
 def create_ta(request, member_id):
@@ -131,6 +149,10 @@ def create_ta(request, member_id):
         form = TAForm()
     return render(request, 'new_ta.html', {'form': form})
 
+def ta_list(request):
+    tas = TA.objects.all()
+    return render(request, 'ta_list.html', {'tas': tas})
+
 
 def create_professor(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
@@ -144,6 +166,10 @@ def create_professor(request, member_id):
     else:
         form = ProfessorForm()
     return render(request, 'new_professor.html', {'form': form})
+
+def professor_list(request):
+    professors = Professor.objects.all()
+    return render(request, 'professor_list.html', {'professors': professors})
 
 
 def create_member_phone(request):
@@ -204,6 +230,10 @@ def delete_course(request, course_id):
         return redirect('courses')
     return render(request, 'delete_course.html', {'course': course})
 
+def course_list(request):
+    courses = Course.objects.all()
+    return render(request, 'course_list.html', {'courses': courses})
+
 
 # Group views
 def groups(request):
@@ -241,6 +271,10 @@ def delete_group(request, group_id):
         return redirect('groups')
     return render(request, 'delete_group.html', {'group': group})
 
+
+def group_list(request):
+    groups = Group.objects.all()
+    return render(request, 'group_list.html', {'groups': groups})
 
 # Assistance views
 def assistances(request):
