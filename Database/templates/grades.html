@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Grades List</title>
+</head>
+<body>
+<h2>Grades List</h2>
+<ul>
+    {% for grade in grades %}
+    <li>
+        {{ grade.name }}
+        <a href="{% url 'edit_grade' grade.id %}">Edit</a>
+        <a href="{% url 'delete_grade' grade.id %}">Delete</a>
+    </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'create_grade' %}">Add New Grade</a>
+</body>
+</html>

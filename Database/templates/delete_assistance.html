@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete Assistance</title>
+</head>
+<body>
+<h2>Are you sure you want to delete "{{ assistance.name }}"?</h2>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirm</button>
+</form>
+<a href="{% url 'assistances' %}">Cancel</a>
+</body>
+</html>

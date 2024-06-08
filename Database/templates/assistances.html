@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assistances List</title>
+</head>
+<body>
+<h2>Assistances List</h2>
+<ul>
+    {% for assistance in assistances %}
+    <li>
+        {{ assistance.name }}
+        <a href="{% url 'edit_assistance' assistance.id %}">Edit</a>
+        <a href="{% url 'delete_assistance' assistance.id %}">Delete</a>
+    </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'create_assistance' %}">Add New Assistance</a>
+</body>
+</html>
