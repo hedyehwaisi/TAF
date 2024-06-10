@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from .forms import MemberForm, MemberPhoneForm, MemberEmailForm, StudentForm, ProfessorForm, TAForm, CourseForm, \
     GroupForm, AssistanceForm, GradeForm, GroupActivitiesForm, InviteRequestForm
-from .models import Member, Student, TA, Professor, Course, Group, Assistance, Grade, InviteRequest
+from .models import Member, Student, TA, Professor, Course, Group, Assistance, Grade, InviteRequest, MemberPhone, MemberEmail
 
 
 # def index(request):
@@ -105,8 +105,12 @@ def member(request, member_id):
 
 
 def member_list(request):
+    
     members = Member.objects.all()
-    return render(request, 'member_list.html', {'members': members})
+    phones = MemberPhone.objects.all()
+    emails = MemberEmail.objects.all()
+
+    return render(request, 'member_list.html', {'members': members, 'phones': phones, 'emails': emails})
 
 
 # def member_phone_list(request):

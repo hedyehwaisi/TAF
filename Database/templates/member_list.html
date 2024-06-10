@@ -16,6 +16,8 @@
                 <th>Is Admin</th>
                 <th>Created At</th>
                 <th>Updated At</th>
+                <th>Email</th>
+                <th>Phones</th>
             </tr>
         </thead>
         <tbody>
@@ -29,6 +31,18 @@
                 <td>{{ member.is_admin }}</td>
                 <td>{{ member.created_at }}</td>
                 <td>{{ member.updated_at }}</td>
+
+                <td>{% for ema in emails %}
+                    {% if ema.member == member %}
+                        {{ ema.email }}
+                    {% endif %}
+                {% endfor %}</td>
+
+                <td>{% for pho in phones %}
+                    {% if pho.member == member %}
+                       {{ pho.phone}},
+                    {% endif %}
+                {% endfor %}</td>
             </tr>
             {% endfor %}
         </tbody>
