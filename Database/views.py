@@ -4,9 +4,6 @@ from .forms import MemberForm, MemberPhoneForm, MemberEmailForm, StudentForm, Pr
 from .models import Member, Student, TA, Professor, Course, Group, Assistance, Grade, InviteRequest, MemberPhone, MemberEmail
 
 
-# def index(request):
-#     return render(request, 'index.html')
-
 # Homepage view
 def homepage(request):
     return render(request, 'homepage.html')
@@ -20,19 +17,6 @@ def list_page(request):
 def create_page(request):
     return render(request, 'create_page.html')
 
-
-# def delete_page(request):
-#     # Your logic for deleting items
-#     context = {
-#         # Assuming 'member_id' is None if not available
-#         'member_id': None,  # or any default value you prefer
-#         'course_id': None,
-#         'group_id': None,
-#         'grade_id': None,
-#         'assistance_id': None,
-#         'invite_request_id': None
-#     }
-#     return render(request, 'delete_page.html', context)
 
 
 def delete_page(request, member_id=None, course_id=None, group_id=None, grade_id=None, assistance_id=None,
@@ -80,17 +64,18 @@ def edit_member(request, member_id):
         form = MemberForm(request.POST, instance=member)
         if form.is_valid():
             form.save()
-            return redirect('members')
+            return redirect('member_list')
     else:
         form = MemberForm(instance=member)
     return render(request, 'edit_member.html', {'form': form, 'member': member})
+
 
 
 def delete_member(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
     if request.method == 'POST':
         member.delete()
-        return redirect('members')
+        return redirect('member_list')
     return render(request, 'delete_member.html', {'member': member})
 
 
@@ -125,11 +110,12 @@ def create_student(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
     if request.method == 'POST':
         form = StudentForm(request.POST)
+
         if form.is_valid():
             student = form.save(commit=False)
             student.member = member
             student.save()
-            return redirect('members')
+            return redirect('student_list')
     else:
         form = StudentForm()
     return render(request, 'new_student.html', {'form': form})
@@ -148,7 +134,7 @@ def create_ta(request, member_id):
             ta = form.save(commit=False)
             ta.member = member
             ta.save()
-            return redirect('members')
+            return redirect('ta_list')
     else:
         form = TAForm()
     return render(request, 'new_ta.html', {'form': form})
@@ -166,7 +152,7 @@ def create_professor(request, member_id):
             professor = form.save(commit=False)
             professor.member = member
             professor.save()
-            return redirect('members')
+            return redirect('professor_list')
     else:
         form = ProfessorForm()
     return render(request, 'new_professor.html', {'form': form})
@@ -209,7 +195,7 @@ def create_course(request):
         form = CourseForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('courses')
+            return redirect('course_list')
     else:
         form = CourseForm()
     return render(request, 'create_course.html', {'form': form})
@@ -221,7 +207,7 @@ def edit_course(request, course_id):
         form = CourseForm(request.POST, instance=course)
         if form.is_valid():
             form.save()
-            return redirect('courses')
+            return redirect('course_list')
     else:
         form = CourseForm(instance=course)
     return render(request, 'edit_course.html', {'form': form, 'course': course})
@@ -231,7 +217,7 @@ def delete_course(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
     if request.method == 'POST':
         course.delete()
-        return redirect('courses')
+        return redirect('course_list')
     return render(request, 'delete_course.html', {'course': course})
 
 def course_list(request):

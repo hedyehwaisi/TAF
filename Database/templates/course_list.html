@@ -19,9 +19,15 @@
                 <td>{{ course.course_id }}</td>
                 <td>{{ course.title }}</td>
                 <td>{{ course.unit }}</td>
+                <td>
+                    <a href="{% url 'edit_course' course.pk %}">Edit</a>
+                    <a href="{% url 'delete_course' course.pk %}">Delete</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <a href="{% url 'create_course'  %}">Add New Course</a>
 </body>
 </html>

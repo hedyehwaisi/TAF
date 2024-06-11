@@ -20,6 +20,8 @@ class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
         fields = '__all__'
+        # widgets = {'member': forms.HiddenInput()}
+        exclude = ['member']
 
 class ProfessorForm(forms.ModelForm):
     class Meta:

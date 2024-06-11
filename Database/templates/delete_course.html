@@ -4,11 +4,11 @@
     <title>Delete Course</title>
 </head>
 <body>
-<h2>Are you sure you want to delete "{{ course.name }}"?</h2>
+<h2>Are you sure you want to delete "{{ course.title }}"?</h2>
 <form method="post">
     {% csrf_token %}
     <button type="submit">Confirm</button>
 </form>
-<a href="{% url 'courses' %}">Cancel</a>
+<a href="{% url 'course_list' %}">Cancel</a>
 </body>
 </html>
