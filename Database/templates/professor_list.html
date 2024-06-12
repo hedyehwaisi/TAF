@@ -21,6 +21,11 @@
                 <td>{{ professor.member.first_name }} {{ professor.member.last_name }}</td>
                 <td>{{ professor.research_field }}</td>
                 <td>{{ professor.profRank }}</td>
+
+                <td>
+                    <a href="{% url 'edit_member' professor.member.pk %}">Edit</a>
+                    <a href="{% url 'delete_member' professor.member.pk %}">Delete</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

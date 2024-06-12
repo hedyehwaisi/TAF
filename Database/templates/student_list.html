@@ -23,6 +23,11 @@
                 <td>{{ student.gpa }}</td>
                 <td>{{ student.major }}</td>
                 <td>{{ student.entry_year }}</td>
+
+                <td>
+                    <a href="{% url 'edit_member' student.member.pk %}">Edit</a>
+                    <a href="{% url 'delete_member' student.member.pk %}">Delete</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

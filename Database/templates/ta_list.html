@@ -23,6 +23,11 @@
                 <td>{{ ta.field }}</td>
                 <td>{{ ta.entrance_semester }}</td>
                 <td>{{ ta.supervisor }}</td>
+
+                <td>
+                    <a href="{% url 'edit_member' ta.member.pk %}">Edit</a>
+                    <a href="{% url 'delete_member' ta.member.pk %}">Delete</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
