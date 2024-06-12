@@ -25,9 +25,21 @@
                 <td>{{ group.department }}</td>
                 <td>{{ group.semester }}</td>
                 <td>{{ group.year }}</td>
+                
+                <td>
+                    <a href="{% url 'edit_group' group.id %}">Edit</a>
+                    <a href="{% url 'delete_group' group.id %}">Delete</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <ul>
+        <li><a href="{% url 'create_group' %}">Add New Group</a></li>
+        <li><a href="{% url 'list_page' %}">Back to Lists</a></li>
+    </ul>
+
+    
 </body>
 </html>

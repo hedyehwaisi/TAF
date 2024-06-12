@@ -4,11 +4,11 @@
     <title>Delete Group</title>
 </head>
 <body>
-<h2>Are you sure you want to delete "{{ group.name }}"?</h2>
+<h2>Are you sure you want to delete "{{ group.course.title }} {{ group.year_semester }}"?</h2>
 <form method="post">
     {% csrf_token %}
     <button type="submit">Confirm</button>
 </form>
-<a href="{% url 'groups' %}">Cancel</a>
+<a href="{% url 'group_list' %}">Cancel</a>
 </body>
 </html>

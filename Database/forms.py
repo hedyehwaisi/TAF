@@ -27,11 +27,13 @@ class ProfessorForm(forms.ModelForm):
     class Meta:
         model = Professor
         fields = '__all__'
+        exclude = ['member']
 
 class TAForm(forms.ModelForm):
     class Meta:
         model = TA
         fields = '__all__'
+        exclude = ['member']
 
 class CourseForm(forms.ModelForm):
     class Meta:

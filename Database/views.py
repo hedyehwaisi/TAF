@@ -230,13 +230,16 @@ def groups(request):
     groups = Group.objects.all()
     return render(request, 'groups.html', {'groups': groups})
 
+def lists_page(request):
+    return render(request, 'list_page.html')
+
 
 def create_group(request):
     if request.method == 'POST':
         form = GroupForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('groups')
+            return redirect('group_list')
     else:
         form = GroupForm()
     return render(request, 'create_group.html', {'form': form})
@@ -248,7 +251,7 @@ def edit_group(request, group_id):
         form = GroupForm(request.POST, instance=group)
         if form.is_valid():
             form.save()
-            return redirect('groups')
+            return redirect('group_list')
     else:
         form = GroupForm(instance=group)
     return render(request, 'edit_group.html', {'form': form, 'group': group})
@@ -258,7 +261,7 @@ def delete_group(request, group_id):
     group = get_object_or_404(Group, pk=group_id)
     if request.method == 'POST':
         group.delete()
-        return redirect('groups')
+        return redirect('group_list')
     return render(request, 'delete_group.html', {'group': group})
 
 
