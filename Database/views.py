@@ -23,6 +23,7 @@ def delete_page(request, member_id=None, course_id=None, group_id=None, grade_id
                 invite_request_id=None):
     # Create links for each delete action
     delete_links = {
+        
         'delete_member': reverse('delete_member', args=(member_id,)) if member_id else None,
         'delete_course': reverse('delete_course', args=(course_id,)) if course_id else None,
         'delete_group': reverse('delete_group', args=(group_id,)) if group_id else None,
