@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teaching Assistants</title>
+</head>
+<body>
+    <h2>Teaching Assistants</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Member ID</th>
+                <th>Name</th>
+                <th>Field</th>
+                <th>Entrance Semester</th>
+                <th>Supervisor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ta in tas %}
+            <tr>
+                <td>{{ ta.member.member_id }}</td>
+                <td>{{ ta.member.first_name }} {{ ta.member.last_name }}</td>
+                <td>{{ ta.field }}</td>
+                <td>{{ ta.entrance_semester }}</td>
+                <td>{{ ta.supervisor }}</td>
+
+                <td>
+                    <a href="{% url 'edit_member' ta.member.pk %}">Edit</a>
+                    <a href="{% url 'delete_member' ta.member.pk %}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <ul>
+        <li><a href="{% url 'create_member' %}">Add New Member</a></li>
+        <li><a href="{% url 'lists' %}">Back to Lists</a></li>
+    </ul>
+</body>
+</html>

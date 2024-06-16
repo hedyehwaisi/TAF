@@ -19,17 +19,21 @@ class MemberEmailForm(forms.ModelForm):
 class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
-        fields = '__all__'
+        fields = ('gpa', 'major', 'entry_year')
+        # widgets = {'member': forms.HiddenInput()}
+        # exclude = ['member']
 
 class ProfessorForm(forms.ModelForm):
     class Meta:
         model = Professor
         fields = '__all__'
+        exclude = ['member']
 
 class TAForm(forms.ModelForm):
     class Meta:
         model = TA
         fields = '__all__'
+        exclude = ['member']
 
 class CourseForm(forms.ModelForm):
     class Meta:

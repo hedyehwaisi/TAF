@@ -140,12 +140,9 @@ class Assistance(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     ta_feedback = models.TextField(blank=True, null=True)
     is_head_ta = models.BooleanField(default=False)
-    semester = models.CharField(max_length=10)
-    year = models.CharField(max_length=10)
-    year_semester = models.CharField(max_length=20, editable=False)
 
     class Meta:
-        unique_together = (('ta', 'group', 'year_semester'),)
+        unique_together = (('ta', 'group'),)
 
     def save(self, *args, **kwargs):
         self.year_semester = f"{self.year}{self.semester}"
@@ -162,16 +159,9 @@ class Grade(models.Model):
     prof_grade = models.IntegerField()
     ta_grade = models.IntegerField()
     stu_to_ta_rate = models.IntegerField()
-    semester = models.CharField(max_length=10)
-    year = models.CharField(max_length=10)
-    year_semester = models.CharField(max_length=20, editable=False)
 
     class Meta:
-        unique_together = (('student', 'group', 'ta', 'year_semester'),)
-
-    def save(self, *args, **kwargs):
-        self.year_semester = f"{self.year}{self.semester}"
-        super().save(*args, **kwargs)
+        unique_together = (('student', 'group', 'ta'),)
 
     def __str__(self):
         return f"Grade for {self.student.member.first_name} in Group {self.group.id}"
@@ -195,16 +185,9 @@ class InviteRequest(models.Model):
     prof_to_TA_feedback = models.IntegerField()
     ta_request_accepted = models.BooleanField(default=False)
     prof_invite_accepted = models.BooleanField(default=False)
-    semester = models.CharField(max_length=10)
-    year = models.CharField(max_length=10)
-    year_semester = models.CharField(max_length=20, editable=False)
 
     class Meta:
-        unique_together = (('group', 'ta', 'year_semester'),)
-
-    def save(self, *args, **kwargs):
-        self.year_semester = f"{self.year}{self.semester}"
-        super().save(*args, **kwargs)
+        unique_together = (('group', 'ta'),)
 
     def __str__(self):
         return f"Invite Request for TA {self.ta.member.first_name} in Group {self.group.id}"

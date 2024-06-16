@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Member Emails</title>
+</head>
+<body>
+    <h2>Member Emails</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Member</th>
+                <th>Email</th>
+                <th>Email Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member_email in member_emails %}
+            <tr>
+                <td>{{ member_email.member }}</td>
+                <td>{{ member_email.email }}</td>
+                <td>{{ member_email.email_type }}</td>
+            {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

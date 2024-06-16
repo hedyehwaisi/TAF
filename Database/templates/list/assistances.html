@@ -8,12 +8,14 @@
 <ul>
     {% for assistance in assistances %}
     <li>
-        {{ assistance.name }}
+        {{ assistance }}
         <a href="{% url 'edit_assistance' assistance.id %}">Edit</a>
         <a href="{% url 'delete_assistance' assistance.id %}">Delete</a>
     </li>
     {% endfor %}
 </ul>
 <a href="{% url 'create_assistance' %}">Add New Assistance</a>
+</br>
+<a href="{% url 'lists' %}">Back to Lists</a>
 </body>
 </html>
