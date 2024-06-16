@@ -39,10 +39,22 @@ def edit_member(request, member_id):
         form = MemberForm(request.POST, instance=member)
         if form.is_valid():
             form.save()
+
             return redirect('members')
     else:
         form = MemberForm(instance=member)
     return render(request, 'edit/edit_member.html', {'form': form, 'member': member})
+
+def edit_student(request, member_id):
+    member = get_object_or_404(Student, pk=member_id)
+    if request.method == 'POST':
+        form = StudentForm(request.POST, instance=member)
+        if form.is_valid():
+            form.save()
+            return redirect('members')
+    else:
+        form = StudentForm(instance=member)
+    return render(request, 'edit/edit_student.html', {'form': form, 'member': member})
 
 
 
@@ -327,7 +339,7 @@ def edit_invite_request(request, invite_request_id):
             return redirect('invite_requests')
     else:
         form = InviteRequestForm(instance=invite_request)
-    return render(request, 'edite/edit_invite_request.html', {'form': form, 'invite_request': invite_request})
+    return render(request, 'edit/edit_invite_request.html', {'form': form, 'invite_request': invite_request})
 
 
 def delete_invite_request(request, invite_request_id):
