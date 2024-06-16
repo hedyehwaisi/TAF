@@ -20,7 +20,8 @@ def create_member(request):
         form = MemberForm(request.POST)
         if form.is_valid():
             member = form.save(commit=False)
-            member.save()  # Save the member to generate the id
+            member.save()  
+            # Save the member to generate the id
             # Redirect to the appropriate role form
             if member.role == 'student':
                 return redirect('create_student', member_id=member.member_id)
@@ -30,7 +31,7 @@ def create_member(request):
                 return redirect('create_professor', member_id=member.member_id)
     else:
         form = MemberForm()
-    return render(request, 'create_member.html', {'form': form})
+    return render(request, 'create/create_member.html', {'form': form})
 
 
 def edit_member(request, member_id):

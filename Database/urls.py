@@ -57,11 +57,11 @@ urlpatterns = [
 
     # path('', views.homepage, name='homepage'),
     path('create/member/', views.create_member, name='create_member'),
-    path('create/course/', views.create_course, name='create_course'),
-    path('create/group/', views.create_group, name='create_group'),
-    path('create/grade/', views.create_grade, name='create_grade'),
-    path('create/assistance/', views.create_assistance, name='create_assistance'),
-    path('create/invite_request/', views.create_invite_request, name='create_invite_request'),
+    path('create/create_course/', views.create_course, name='create_course'),
+    path('create/create_group/', views.create_group, name='create_group'),
+    path('create/create_grade/', views.create_grade, name='create_grade'),
+    path('create/create_assistance/', views.create_assistance, name='create_assistance'),
+    path('create/create_invite_request/', views.create_invite_request, name='create_invite_request'),
     # path('lists/', views.lists_page, name='lists_page'),
     # Add URLs for other actions (delete, edit, etc.) as needed
 ]

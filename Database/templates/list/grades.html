@@ -8,12 +8,15 @@
 <ul>
     {% for grade in grades %}
     <li>
-        {{ grade.name }}
+        {{ grade }}
         <a href="{% url 'edit_grade' grade.id %}">Edit</a>
         <a href="{% url 'delete_grade' grade.id %}">Delete</a>
     </li>
     {% endfor %}
 </ul>
-<a href="{% url 'create_grade' %}">Add New Grade</a>
+<ul>
+    <li><a href="{% url 'create_grade' %}">Add New Grade</a></li>
+    <li><a href="{% url 'lists' %}">Back to Lists</a></li>
+</ul>
 </body>
 </html>

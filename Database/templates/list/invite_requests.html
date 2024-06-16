@@ -14,6 +14,9 @@
     </li>
     {% endfor %}
 </ul>
-<a href="{% url 'create_invite_request' %}">Add New Invite Request</a>
+<ul>
+    <li><a href="{% url 'create_invite_request' %}">Add New Invite or Request</a></li>
+    <li><a href="{% url 'lists' %}">Back to Lists</a></li>
+</ul>
 </body>
 </html>
