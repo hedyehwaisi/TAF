@@ -8,7 +8,7 @@
 <ul>
     {% for invite_request in invite_request %}
     <li>
-        {{ invite_request.name }}
+        {{ invite_request }}
         <a href="{% url 'edit_invite_request' invite_request.id %}">Edit</a>
         <a href="{% url 'delete_invite_request' invite_request.id %}">Delete</a>
     </li>
