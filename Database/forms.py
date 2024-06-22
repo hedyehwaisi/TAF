@@ -1,20 +1,35 @@
 from django import forms
 from .models import Member, MemberPhone, MemberEmail, Student, Professor, TA, Course, Group, Assistance, Grade, GroupActivities, InviteRequest
+from django.forms import modelformset_factory
+
 
 class MemberForm(forms.ModelForm):
     class Meta:
         model = Member
         fields = '__all__'
 
-class MemberPhoneForm(forms.ModelForm):
-    class Meta:
-        model = MemberPhone
-        fields = '__all__'
+# class MemberPhoneForm(forms.ModelForm):
+#     class Meta:
+#         model = MemberPhone
+#         fields = '__all__'
+
+# class MemberEmailForm(forms.ModelForm):
+#     class Meta:
+#         model = MemberEmail
+#         fields = '__all__'
 
 class MemberEmailForm(forms.ModelForm):
     class Meta:
         model = MemberEmail
-        fields = '__all__'
+        fields = ['email', 'email_type']
+
+class MemberPhoneForm(forms.ModelForm):
+    class Meta:
+        model = MemberPhone
+        fields = ['phone', 'phone_type']
+        
+
+PhoneFormSet = modelformset_factory(MemberPhone, form=MemberPhoneForm, extra=3)
 
 class StudentForm(forms.ModelForm):
     class Meta:
