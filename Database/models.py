@@ -155,13 +155,14 @@ class Assistance(models.Model):
 class Grade(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    ta = models.ForeignKey(TA, on_delete=models.CASCADE)
+    # ta = models.ForeignKey(TA, on_delete=models.CASCADE)
+    assistance = models.ForeignKey(Assistance, on_delete=models.CASCADE)
     prof_grade = models.IntegerField()
     ta_grade = models.IntegerField()
     stu_to_ta_rate = models.IntegerField()
 
     class Meta:
-        unique_together = (('student', 'group', 'ta'),)
+        unique_together = (('student', 'group', 'assistance'),)
 
     def __str__(self):
         return f"Grade for {self.student.member.first_name} in Group {self.group.id}"
