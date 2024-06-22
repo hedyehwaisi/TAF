@@ -28,7 +28,7 @@
 </head>
 <body>
     <h2>Members</h2>
-    
+
     <form method="get">
         {{ form.as_p }}
         <button type="submit">Search</button>
@@ -90,7 +90,7 @@
             <p class="message"><strong>No records have been submitted.</strong></p>
         {% endif %}
     {% endif %}
-    
+
     <ul>
         <li><a href="{% url 'create_member' %}">Add New Member</a></li>
         <li><a href="{% url 'lists' %}">Back to Lists</a></li>
