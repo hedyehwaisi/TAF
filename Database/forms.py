@@ -46,7 +46,7 @@ class CourseForm(forms.ModelForm):
         model = Course
         fields = '__all__'
         widgets = {
-            'unit': forms.NumberInput(attrs={'min': 1, 'max': 4}),
+            'unit': forms.NumberInput(attrs={'min': 1, 'max': 6}),
         }
 
 class GroupForm(forms.ModelForm):
@@ -98,4 +98,3 @@ class MemberSearchForm(forms.Form):
     first_name = forms.CharField(label='First Name', max_length=100, required=False)
     last_name = forms.CharField(label='Last Name', max_length=100, required=False)
     member_id = forms.IntegerField(label='ID', required=False)
-    
