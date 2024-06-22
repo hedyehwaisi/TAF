@@ -91,7 +91,7 @@ def members(request):
         if last_name:
             members = members.filter(last_name__icontains=last_name)
         if member_id:
-            members = members.filter(id=member_id)
+            members = members.filter(member_id=member_id)
     
     return render(request, 'list/members.html', {'members': members, 'form': form, 'phones': phones, 'emails': emails})
 
