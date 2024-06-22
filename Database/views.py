@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from .forms import MemberForm, MemberPhoneForm, MemberEmailForm, StudentForm, ProfessorForm, TAForm, CourseForm, \
-    GroupForm, AssistanceForm, GradeForm, GroupActivitiesForm, InviteRequestForm, MemberSearchForm
+    GroupForm, AssistanceForm, GradeForm, GroupActivitiesForm, InviteRequestForm, MemberSearchForm, PhoneFormSet
 from .models import Member, Student, TA, Professor, Course, Group, Assistance, Grade, InviteRequest, MemberPhone, MemberEmail
 from django.db.models import Q
 
@@ -16,14 +16,71 @@ def create_page(request):
     return render(request, 'create.html')
 
 # Member views
+# def create_member(request):
+#     if request.method == 'POST':
+#         form = MemberForm(request.POST)
+#         if form.is_valid():
+#             member = form.save(commit=False)
+#             member.save()  
+
+#             # redirect('create_member_phone', member_id=member.member_id)
+
+#             # Save the member to generate the id
+#             # Redirect to the appropriate role form
+#             if member.role == 'student':
+#                 return redirect('create_student', member_id=member.member_id)
+#             elif member.role == 'ta':
+#                 return redirect('create_ta', member_id=member.member_id)
+#             elif member.role == 'professor':
+#                 return redirect('create_professor', member_id=member.member_id)
+#     else:
+#         form = MemberForm()
+#     return render(request, 'create/create_member.html', {'form': form})
+
+# def create_member(request):
+#     if request.method == 'POST':
+#         member_form = MemberForm(request.POST)
+#         email_form = MemberEmailForm(request.POST)
+#         phone_form = MemberPhoneForm(request.POST)
+#         if member_form.is_valid() and email_form.is_valid() and phone_form.is_valid():
+#             member = member_form.save()
+#             email = email_form.save(commit=False)
+#             email.member = member
+#             email.save()
+#             phone = phone_form.save(commit=False)
+#             phone.member = member
+#             phone.save()
+
+#             if member.role == 'student':
+#                 return redirect('create_student', member_id=member.member_id)
+#             elif member.role == 'ta':
+#                 return redirect('create_ta', member_id=member.member_id)
+#             elif member.role == 'professor':
+#                 return redirect('create_professor', member_id=member.member_id)
+#     else:
+#         member_form = MemberForm()
+#         email_form = MemberEmailForm()
+#         phone_form = MemberPhoneForm()
+
+#     return render(request, 'create/create_member.html', {'form': member_form, 'eform': email_form, 'pform': phone_form})
+
 def create_member(request):
     if request.method == 'POST':
-        form = MemberForm(request.POST)
-        if form.is_valid():
-            member = form.save(commit=False)
-            member.save()  
-            # Save the member to generate the id
-            # Redirect to the appropriate role form
+        member_form = MemberForm(request.POST)
+        email_form = MemberEmailForm(request.POST)
+        phone_formset = PhoneFormSet(request.POST, queryset=MemberPhone.objects.none())
+        
+        if member_form.is_valid() and email_form.is_valid() and phone_formset.is_valid():
+            member = member_form.save()
+            email = email_form.save(commit=False)
+            email.member = member
+            email.save()
+            
+            for phone_form in phone_formset:
+                phone = phone_form.save(commit=False)
+                phone.member = member
+                phone.save()
+                
             if member.role == 'student':
                 return redirect('create_student', member_id=member.member_id)
             elif member.role == 'ta':
@@ -31,8 +88,16 @@ def create_member(request):
             elif member.role == 'professor':
                 return redirect('create_professor', member_id=member.member_id)
     else:
-        form = MemberForm()
-    return render(request, 'create/create_member.html', {'form': form})
+        member_form = MemberForm()
+        email_form = MemberEmailForm()
+        phone_formset = PhoneFormSet(queryset=MemberPhone.objects.none())
+        
+    return render(request, 'create/create_member.html', {
+        'member_form': member_form,
+        'email_form': email_form,
+        'phone_formset': phone_formset
+    })
+
 
 
 def edit_member(request, member_id):
@@ -193,26 +258,26 @@ def professors(request):
     return render(request, 'list/professors.html', {'professors': professors})
 
 
-def create_member_phone(request):
-    if request.method == 'POST':
-        form = MemberPhoneForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('member_phones')
-    else:
-        form = MemberPhoneForm()
-    return render(request, 'create/create_member_phone.html', {'form': form})
+# def create_member_phone(request):
+#     if request.method == 'POST':
+#         form = MemberPhoneForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('members')
+#     else:
+#         form = MemberPhoneForm()
+#     return render(request, 'create/create_member_phone.html', {'form': form})
 
 
-def create_member_email(request):
-    if request.method == 'POST':
-        form = MemberEmailForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('member_emails')
-    else:
-        form = MemberEmailForm()
-    return render(request, 'create/create_member_email.html', {'form': form})
+# def create_member_email(request):
+#     if request.method == 'POST':
+#         form = MemberEmailForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('member_emails')
+#     else:
+#         form = MemberEmailForm()
+#     return render(request, 'create/create_member_email.html', {'form': form})
 
 
 # Course views
