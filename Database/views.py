@@ -76,15 +76,40 @@ def delete_member(request, member_id):
 
 #     return render(request, 'list/members.html', {'members': members, 'phones': phones, 'emails': emails})
 
+# def members(request):
+#     form = MemberSearchForm(request.GET)
+#     members = Member.objects.all()
+#     phones = MemberPhone.objects.all()
+#     emails = MemberEmail.objects.all()
+#     if form.is_valid():
+#         first_name = form.cleaned_data.get('first_name')
+#         last_name = form.cleaned_data.get('last_name')
+#         member_id = form.cleaned_data.get('member_id')
+#
+#         if first_name:
+#             members = members.filter(first_name__icontains=first_name)
+#         if last_name:
+#             members = members.filter(last_name__icontains=last_name)
+#         if member_id:
+#             members = members.filter(member_id=member_id)
+#
+#     return render(request, 'list/members.html', {'members': members, 'form': form, 'phones': phones, 'emails': emails})
+
+
 def members(request):
     form = MemberSearchForm(request.GET)
     members = Member.objects.all()
     phones = MemberPhone.objects.all()
     emails = MemberEmail.objects.all()
+    search_performed = False
+
     if form.is_valid():
         first_name = form.cleaned_data.get('first_name')
         last_name = form.cleaned_data.get('last_name')
         member_id = form.cleaned_data.get('member_id')
+
+        if first_name or last_name or member_id:
+            search_performed = True  # A search was performed
 
         if first_name:
             members = members.filter(first_name__icontains=first_name)
@@ -92,9 +117,16 @@ def members(request):
             members = members.filter(last_name__icontains=last_name)
         if member_id:
             members = members.filter(member_id=member_id)
-    
-    return render(request, 'list/members.html', {'members': members, 'form': form, 'phones': phones, 'emails': emails})
 
+    context = {
+        'members': members,
+        'form': form,
+        'phones': phones,
+        'emails': emails,
+        'search_performed': search_performed,
+    }
+
+    return render(request, 'list/members.html', context)
 
 
 # def member_phone_list(request):

@@ -2,6 +2,29 @@
 <html>
 <head>
     <title>Members</title>
+    <style>
+        .message {
+            font-size: 1.2em;
+            color: red;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;  /* Add padding to table cells */
+            border: 1px solid #ddd;  /* Add border to table cells */
+            text-align: left;  /* Align text to the left */
+        }
+        th {
+            background-color: #f2f2f2;  /* Add background color to table header */
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;  /* Add background color to even table rows */
+        }
+    </style>
 </head>
 <body>
     <h2>Members</h2>
@@ -11,7 +34,7 @@
         <button type="submit">Search</button>
     </form>
 
-    <ul>
+    {% if members %}
     <table>
         <thead>
             <tr>
@@ -47,7 +70,7 @@
 
                 <td>{% for pho in phones %}
                     {% if pho.member == member %}
-                    {{ pho.phone_type}}: {{ pho.phone}} </br>
+                    {{ pho.phone_type }}: {{ pho.phone }} <br>
                     {% endif %}
                 {% endfor %}</td>
 
@@ -55,12 +78,18 @@
                     <a href="{% url 'edit_member' member.pk %}">Edit</a>
                     <a href="{% url 'delete_member' member.pk %}">Delete</a>
                 </td>
-
             </tr>
-
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+        <!-- If no members exist, display a message -->
+        {% if search_performed %}
+            <p class="message"><strong>Member not found or doesn't exist.</strong></p>
+        {% else %}
+            <p class="message"><strong>No records have been submitted.</strong></p>
+        {% endif %}
+    {% endif %}
     
     <ul>
         <li><a href="{% url 'create_member' %}">Add New Member</a></li>
