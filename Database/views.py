@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from .forms import MemberForm, MemberPhoneForm, MemberEmailForm, StudentForm, ProfessorForm, TAForm, CourseForm, \
-    GroupForm, AssistanceForm, GradeForm, GroupActivitiesForm, InviteRequestForm
+    GroupForm, AssistanceForm, GradeForm, GroupActivitiesForm, InviteRequestForm, MemberSearchForm
 from .models import Member, Student, TA, Professor, Course, Group, Assistance, Grade, InviteRequest, MemberPhone, MemberEmail
+from django.db.models import Q
 
 
 # Homepage view
@@ -67,13 +68,33 @@ def delete_member(request, member_id):
     return render(request, 'delete/delete_member.html', {'member': member})
 
 
-def members(request):
+# def members(request):
     
+#     members = Member.objects.all()
+#     phones = MemberPhone.objects.all()
+#     emails = MemberEmail.objects.all()
+
+#     return render(request, 'list/members.html', {'members': members, 'phones': phones, 'emails': emails})
+
+def members(request):
+    form = MemberSearchForm(request.GET)
     members = Member.objects.all()
     phones = MemberPhone.objects.all()
     emails = MemberEmail.objects.all()
+    if form.is_valid():
+        first_name = form.cleaned_data.get('first_name')
+        last_name = form.cleaned_data.get('last_name')
+        member_id = form.cleaned_data.get('member_id')
 
-    return render(request, 'list/members.html', {'members': members, 'phones': phones, 'emails': emails})
+        if first_name:
+            members = members.filter(first_name__icontains=first_name)
+        if last_name:
+            members = members.filter(last_name__icontains=last_name)
+        if member_id:
+            members = members.filter(id=member_id)
+    
+    return render(request, 'list/members.html', {'members': members, 'form': form, 'phones': phones, 'emails': emails})
+
 
 
 # def member_phone_list(request):
@@ -349,6 +370,8 @@ def delete_invite_request(request, invite_request_id):
         invite_request.delete()
         return redirect('invite_requests')
     return render(request, 'delete/delete_invite_request.html', {'invite_request': invite_request})
+
+
 
 # # Group Activities views
 # def create_group_activities(request):
