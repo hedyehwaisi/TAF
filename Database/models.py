@@ -21,7 +21,7 @@ class Member(models.Model):
     password = models.CharField(max_length=128)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    linkedIn_addr = models.URLField(blank=True, null=True)
+    linkedIn_addr = models.URLField(blank=True )
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     is_admin = models.BooleanField(default=False)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='student')
@@ -31,20 +31,28 @@ class Member(models.Model):
 
 
 class MemberPhone(models.Model):
+    Type = [
+        ('work', 'Work'),
+        ('personal', 'Personal'),
+    ]
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
     phone_regex = RegexValidator(regex=r'^(09|\+989)\d{9}$',
                                  message="Phone number must be in the format '09xxxxxxxxx' or '+989xxxxxxxxx'.")
     phone = models.CharField(validators=[phone_regex], max_length=13, unique=True)
-    phone_type = models.CharField(max_length=255)
+    phone_type = models.CharField(max_length=255, choices=Type, default='Personal')
 
     def __str__(self):
         return f"{self.phone_type}: {self.phone}"
 
 
 class MemberEmail(models.Model):
+    Type = [
+        ('work', 'Work'),
+        ('personal', 'Personal'),
+    ]
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
     email = models.EmailField(unique=True)
-    email_type = models.CharField(max_length=255)
+    email_type = models.CharField(max_length=255, choices=Type, default='Personal')
 
     def __str__(self):
         return f"{self.email_type}: {self.email}"

@@ -7,6 +7,9 @@ class MemberForm(forms.ModelForm):
     class Meta:
         model = Member
         fields = '__all__'
+        widgets = {
+            'password': forms.PasswordInput(),
+        }
 
 # class MemberPhoneForm(forms.ModelForm):
 #     class Meta:

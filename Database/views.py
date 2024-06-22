@@ -15,54 +15,6 @@ def lists(request):
 def create_page(request):
     return render(request, 'create.html')
 
-# Member views
-# def create_member(request):
-#     if request.method == 'POST':
-#         form = MemberForm(request.POST)
-#         if form.is_valid():
-#             member = form.save(commit=False)
-#             member.save()  
-
-#             # redirect('create_member_phone', member_id=member.member_id)
-
-#             # Save the member to generate the id
-#             # Redirect to the appropriate role form
-#             if member.role == 'student':
-#                 return redirect('create_student', member_id=member.member_id)
-#             elif member.role == 'ta':
-#                 return redirect('create_ta', member_id=member.member_id)
-#             elif member.role == 'professor':
-#                 return redirect('create_professor', member_id=member.member_id)
-#     else:
-#         form = MemberForm()
-#     return render(request, 'create/create_member.html', {'form': form})
-
-# def create_member(request):
-#     if request.method == 'POST':
-#         member_form = MemberForm(request.POST)
-#         email_form = MemberEmailForm(request.POST)
-#         phone_form = MemberPhoneForm(request.POST)
-#         if member_form.is_valid() and email_form.is_valid() and phone_form.is_valid():
-#             member = member_form.save()
-#             email = email_form.save(commit=False)
-#             email.member = member
-#             email.save()
-#             phone = phone_form.save(commit=False)
-#             phone.member = member
-#             phone.save()
-
-#             if member.role == 'student':
-#                 return redirect('create_student', member_id=member.member_id)
-#             elif member.role == 'ta':
-#                 return redirect('create_ta', member_id=member.member_id)
-#             elif member.role == 'professor':
-#                 return redirect('create_professor', member_id=member.member_id)
-#     else:
-#         member_form = MemberForm()
-#         email_form = MemberEmailForm()
-#         phone_form = MemberPhoneForm()
-
-#     return render(request, 'create/create_member.html', {'form': member_form, 'eform': email_form, 'pform': phone_form})
 
 def create_member(request):
     if request.method == 'POST':
@@ -133,14 +85,6 @@ def delete_member(request, member_id):
     return render(request, 'delete/delete_member.html', {'member': member})
 
 
-# def members(request):
-    
-#     members = Member.objects.all()
-#     phones = MemberPhone.objects.all()
-#     emails = MemberEmail.objects.all()
-
-#     return render(request, 'list/members.html', {'members': members, 'phones': phones, 'emails': emails})
-
 def members(request):
     form = MemberSearchForm(request.GET)
     members = Member.objects.all()
@@ -160,15 +104,6 @@ def members(request):
     
     return render(request, 'list/members.html', {'members': members, 'form': form, 'phones': phones, 'emails': emails})
 
-
-
-# def member_phone_list(request):
-#     member_phones = MemberPhone.objects.all()
-#     return render(request, 'member_phone_list.html', {'member_phones': member_phones})
-
-# def member_email_list(request):
-#     member_emails = MemberEmail.objects.all()
-#     return render(request, 'member_email_list.html', {'member_emails': member_emails})
 
 def create_student(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
@@ -226,26 +161,6 @@ def professors(request):
     return render(request, 'list/professors.html', {'professors': professors})
 
 
-# def create_member_phone(request):
-#     if request.method == 'POST':
-#         form = MemberPhoneForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('members')
-#     else:
-#         form = MemberPhoneForm()
-#     return render(request, 'create/create_member_phone.html', {'form': form})
-
-
-# def create_member_email(request):
-#     if request.method == 'POST':
-#         form = MemberEmailForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('member_emails')
-#     else:
-#         form = MemberEmailForm()
-#     return render(request, 'create/create_member_email.html', {'form': form})
 
 
 # Course views
