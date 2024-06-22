@@ -11,15 +11,6 @@ class MemberForm(forms.ModelForm):
             'password': forms.PasswordInput(),
         }
 
-# class MemberPhoneForm(forms.ModelForm):
-#     class Meta:
-#         model = MemberPhone
-#         fields = '__all__'
-
-# class MemberEmailForm(forms.ModelForm):
-#     class Meta:
-#         model = MemberEmail
-#         fields = '__all__'
 
 class MemberEmailForm(forms.ModelForm):
     class Meta:
@@ -32,7 +23,7 @@ class MemberPhoneForm(forms.ModelForm):
         fields = ['phone', 'phone_type']
         
 
-PhoneFormSet = modelformset_factory(MemberPhone, form=MemberPhoneForm, extra=3)
+PhoneFormSet = modelformset_factory(MemberPhone, form=MemberPhoneForm, extra=2)
 
 class StudentForm(forms.ModelForm):
     class Meta:
@@ -74,7 +65,7 @@ class GroupForm(forms.ModelForm):
         widgets = {
             'class_addr': forms.NumberInput(attrs={'min': 300, 'max': 320}),
             'semester': forms.NumberInput(attrs={'min': 1, 'max': 2}),
-            'year': forms.NumberInput(attrs={'min': 1400, 'max': 1500}),
+            'year': forms.NumberInput(attrs={'min': 1392, 'max': 1402}),
         }
 
 class AssistanceForm(forms.ModelForm):
