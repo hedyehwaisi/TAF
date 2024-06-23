@@ -31,6 +31,7 @@ class StudentForm(forms.ModelForm):
         fields = ('gpa', 'major', 'entry_year')
         widgets = {
             'gpa': forms.NumberInput(attrs={'min': 0, 'max': 20}),
+            'entry_year' : forms.NumberInput(attrs={'min': 1392, 'max': 1403}),
         }
         # widgets = {'member': forms.HiddenInput()}
         # exclude = ['member']

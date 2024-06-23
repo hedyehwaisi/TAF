@@ -3,6 +3,8 @@ from .forms import MemberForm, MemberPhoneForm, MemberEmailForm, StudentForm, Pr
     GroupForm, AssistanceForm, GradeForm, GroupActivitiesForm, InviteRequestForm, MemberSearchForm, PhoneFormSet
 from .models import Member, Student, TA, Professor, Course, Group, Assistance, Grade, InviteRequest, MemberPhone, MemberEmail
 from django.db.models import Q
+from django.db import IntegrityError
+
 
 
 # Homepage view
@@ -21,18 +23,24 @@ def create_member(request):
         member_form = MemberForm(request.POST)
         email_form = MemberEmailForm(request.POST)
         phone_formset = PhoneFormSet(request.POST, queryset=MemberPhone.objects.none())
-        
+
         if member_form.is_valid() and email_form.is_valid() and phone_formset.is_valid():
             member = member_form.save()
             email = email_form.save(commit=False)
             email.member = member
             email.save()
-            
+
             for phone_form in phone_formset:
-                phone = phone_form.save(commit=False)
-                phone.member = member
-                phone.save()
-                
+                try:
+                    phone = phone_form.save(commit=False)
+                    phone.member = member
+                    phone.save()
+                except IntegrityError:
+                    # Handle the case where the phone number already exists
+                    # For example, you can add an error to the formset
+                    phone_form.add_error(None, "Phone number already exists.")
+                    # Rollback the transaction or handle the error as needed
+
             if member.role == 'student':
                 return redirect('create_student', member_id=member.member_id)
             elif member.role == 'ta':
@@ -43,7 +51,7 @@ def create_member(request):
         member_form = MemberForm()
         email_form = MemberEmailForm()
         phone_formset = PhoneFormSet(queryset=MemberPhone.objects.none())
-        
+
     return render(request, 'create/create_member.html', {
         'member_form': member_form,
         'email_form': email_form,
@@ -51,6 +59,40 @@ def create_member(request):
     })
 
 
+
+
+# def edit_member(request, member_id):
+#     member = get_object_or_404(Member, pk=member_id)
+
+#     if request.method == 'POST':
+#         form = MemberForm(request.POST, instance=member)
+
+#         if form.is_valid():
+#             mem = form.save()
+
+#             if member.role == 'student':
+#                 stu = get_object_or_404(Student, member = member.member_id)
+#                 stu.delete()
+#             elif member.role == 'professor':
+#                 prof = get_object_or_404(Professor, member = member.member_id)
+#                 prof.delete()
+#             elif member.role == 'ta':
+#                 ta = get_object_or_404(TA, member = member.member_id)
+#                 ta.delete()
+
+#             if mem.role == 'student':
+#                 return redirect('create_student', member_id=member.member_id)
+#             elif mem.role == 'ta':
+#                 return redirect('create_ta', member_id=member.member_id)
+#             elif mem.role == 'professor':
+#                 return redirect('create_professor', member_id=member.member_id)
+
+
+
+#             return redirect('members')
+#     else:
+#         form = MemberForm(instance=member)
+#     return render(request, 'edit/edit_member.html', {'form': form, 'member': member})
 
 def edit_member(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
@@ -63,6 +105,8 @@ def edit_member(request, member_id):
     else:
         form = MemberForm(instance=member)
     return render(request, 'edit/edit_member.html', {'form': form, 'member': member})
+
+
 
 def edit_student(request, member_id):
     member = get_object_or_404(Student, pk=member_id)
