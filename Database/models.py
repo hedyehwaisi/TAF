@@ -21,7 +21,7 @@ class Member(models.Model):
     password = models.CharField(max_length=128)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    linkedIn_addr = models.URLField(blank=True, null=True)
+    linkedIn_addr = models.URLField(blank=True )
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     is_admin = models.BooleanField(default=False)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='student')
@@ -31,29 +31,44 @@ class Member(models.Model):
 
 
 class MemberPhone(models.Model):
+    Type = [
+        ('null', ''),
+        ('work', 'Work'),
+        ('personal', 'Personal'),
+    ]
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
     phone_regex = RegexValidator(regex=r'^(09|\+989)\d{9}$',
                                  message="Phone number must be in the format '09xxxxxxxxx' or '+989xxxxxxxxx'.")
-    phone = models.CharField(validators=[phone_regex], max_length=13, unique=True)
-    phone_type = models.CharField(max_length=255)
+    phone = models.CharField(validators=[phone_regex], max_length=13, unique=True, blank=True)
+    phone_type = models.CharField(max_length=255, choices=Type, default='', blank=True)
 
     def __str__(self):
         return f"{self.phone_type}: {self.phone}"
 
 
 class MemberEmail(models.Model):
+    Type = [
+        ('work', 'Work'),
+        ('personal', 'Personal'),
+    ]
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
-    email = models.EmailField(unique=True)
-    email_type = models.CharField(max_length=255)
+    email = models.EmailField(unique=True, blank=True)
+    email_type = models.CharField(max_length=255, choices=Type, default='Personal', blank=True)
 
     def __str__(self):
         return f"{self.email_type}: {self.email}"
 
 
 class Student(models.Model):
+    major = [
+        ('cs', 'Computer Science'),
+        ('math', 'Mathmatics'),
+        ('statis', 'Statistics'),
+    ]
+    
     member = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True)
     gpa = models.DecimalField(max_digits=4, decimal_places=2)
-    major = models.CharField(max_length=100)
+    major = models.CharField(max_length=100, choices=major, default='Computer Science')
     entry_year = models.PositiveIntegerField()
 
     @property
@@ -116,10 +131,17 @@ class Course(models.Model):
 
 
 class Group(models.Model):
+
+    deps = {
+        ('science', 'Science Department'),
+        ('engineering', 'Engineering Department'),
+
+    }
+
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
     class_addr = models.CharField(max_length=10)
-    department_name = models.CharField(max_length=100, default='Science Department')
+    department_name = models.CharField(max_length=100, choices=deps, default='Science Department')
     semester = models.CharField(max_length=10)
     year = models.CharField(max_length=10)
     year_semester = models.CharField(max_length=20, editable=False)

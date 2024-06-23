@@ -1,24 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from .forms import MemberForm, MemberPhoneForm, MemberEmailForm, StudentForm, ProfessorForm, TAForm, CourseForm, \
     GroupForm, AssistanceForm, GradeForm, GroupActivitiesForm, InviteRequestForm, MemberSearchForm, PhoneFormSet
-from .models import Member, Student, TA, Professor, Course, Group, Assistance, Grade, InviteRequest, MemberPhone, \
-    MemberEmail
+from .models import Member, Student, TA, Professor, Course, Group, Assistance, Grade, InviteRequest, MemberPhone, MemberEmail
 from django.db.models import Q
-from django.db import IntegrityError
 
 
 # Homepage view
 def homepage(request):
     return render(request, 'homepage.html')
 
-
 def lists(request):
     return render(request, 'lists.html')
 
-
 def create_page(request):
     return render(request, 'create.html')
-
 
 # Member views
 # def create_member(request):
@@ -69,64 +64,23 @@ def create_page(request):
 
 #     return render(request, 'create/create_member.html', {'form': member_form, 'eform': email_form, 'pform': phone_form})
 
-# def create_member(request):
-#     if request.method == 'POST':
-#         member_form = MemberForm(request.POST)
-#         email_form = MemberEmailForm(request.POST)
-#         phone_formset = PhoneFormSet(request.POST, queryset=MemberPhone.objects.none())
-#
-#         if member_form.is_valid() and email_form.is_valid() and phone_formset.is_valid():
-#             member = member_form.save()
-#             email = email_form.save(commit=False)
-#             email.member = member
-#             email.save()
-#
-#             for phone_form in phone_formset:
-#                 phone = phone_form.save(commit=False)
-#                 phone.member = member
-#                 phone.save()
-#
-#             if member.role == 'student':
-#                 return redirect('create_student', member_id=member.member_id)
-#             elif member.role == 'ta':
-#                 return redirect('create_ta', member_id=member.member_id)
-#             elif member.role == 'professor':
-#                 return redirect('create_professor', member_id=member.member_id)
-#     else:
-#         member_form = MemberForm()
-#         email_form = MemberEmailForm()
-#         phone_formset = PhoneFormSet(queryset=MemberPhone.objects.none())
-#
-#     return render(request, 'create/create_member.html', {
-#         'member_form': member_form,
-#         'email_form': email_form,
-#         'phone_formset': phone_formset
-#     })
-
-
 def create_member(request):
     if request.method == 'POST':
         member_form = MemberForm(request.POST)
         email_form = MemberEmailForm(request.POST)
         phone_formset = PhoneFormSet(request.POST, queryset=MemberPhone.objects.none())
-
+        
         if member_form.is_valid() and email_form.is_valid() and phone_formset.is_valid():
             member = member_form.save()
             email = email_form.save(commit=False)
             email.member = member
             email.save()
-
+            
             for phone_form in phone_formset:
-                try:
-                    phone = phone_form.save(commit=False)
-                    phone.member = member
-                    phone.save()
-                except IntegrityError:
-                    # Handle the case where the phone number already exists
-                    # For example, you can add an error to the formset
-                    phone_form.add_error(None, "Phone number already exists.")
-                    # Rollback the transaction or handle the error as needed
-
+                phone = phone_form.save(commit=False)
+                phone.member = member
+                phone.save()
+                
             if member.role == 'student':
                 return redirect('create_student', member_id=member.member_id)
             elif member.role == 'ta':
@@ -137,12 +91,13 @@ def create_member(request):
         member_form = MemberForm()
         email_form = MemberEmailForm()
         phone_formset = PhoneFormSet(queryset=MemberPhone.objects.none())
-
+        
     return render(request, 'create/create_member.html', {
         'member_form': member_form,
         'email_form': email_form,
         'phone_formset': phone_formset
     })
+
 
 
 def edit_member(request, member_id):
@@ -157,7 +112,6 @@ def edit_member(request, member_id):
         form = MemberForm(instance=member)
     return render(request, 'edit/edit_member.html', {'form': form, 'member': member})
 
-
 def edit_student(request, member_id):
     member = get_object_or_404(Student, pk=member_id)
     if request.method == 'POST':
@@ -170,6 +124,7 @@ def edit_student(request, member_id):
     return render(request, 'edit/edit_student.html', {'form': form, 'member': member})
 
 
+
 def delete_member(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
     if request.method == 'POST':
@@ -179,47 +134,22 @@ def delete_member(request, member_id):
 
 
 # def members(request):
-
+    
 #     members = Member.objects.all()
 #     phones = MemberPhone.objects.all()
 #     emails = MemberEmail.objects.all()
 
 #     return render(request, 'list/members.html', {'members': members, 'phones': phones, 'emails': emails})
 
-# def members(request):
-#     form = MemberSearchForm(request.GET)
-#     members = Member.objects.all()
-#     phones = MemberPhone.objects.all()
-#     emails = MemberEmail.objects.all()
-#     if form.is_valid():
-#         first_name = form.cleaned_data.get('first_name')
-#         last_name = form.cleaned_data.get('last_name')
-#         member_id = form.cleaned_data.get('member_id')
-#
-#         if first_name:
-#             members = members.filter(first_name__icontains=first_name)
-#         if last_name:
-#             members = members.filter(last_name__icontains=last_name)
-#         if member_id:
-#             members = members.filter(member_id=member_id)
-#
-#     return render(request, 'list/members.html', {'members': members, 'form': form, 'phones': phones, 'emails': emails})
-
-
 def members(request):
     form = MemberSearchForm(request.GET)
     members = Member.objects.all()
     phones = MemberPhone.objects.all()
     emails = MemberEmail.objects.all()
-    search_performed = False
-
     if form.is_valid():
         first_name = form.cleaned_data.get('first_name')
         last_name = form.cleaned_data.get('last_name')
         member_id = form.cleaned_data.get('member_id')
-
-        if first_name or last_name or member_id:
-            search_performed = True  # A search was performed
 
         if first_name:
             members = members.filter(first_name__icontains=first_name)
@@ -227,16 +157,9 @@ def members(request):
             members = members.filter(last_name__icontains=last_name)
         if member_id:
             members = members.filter(member_id=member_id)
+    
+    return render(request, 'list/members.html', {'members': members, 'form': form, 'phones': phones, 'emails': emails})
 
-    context = {
-        'members': members,
-        'form': form,
-        'phones': phones,
-        'emails': emails,
-        'search_performed': search_performed,
-    }
-
-    return render(request, 'list/members.html', context)
 
 
 # def member_phone_list(request):
@@ -280,7 +203,6 @@ def create_ta(request, member_id):
         form = TAForm()
     return render(request, 'create/create_ta.html', {'form': form})
 
-
 def tas(request):
     tas = TA.objects.all()
     return render(request, 'list/tas.html', {'tas': tas})
@@ -298,7 +220,6 @@ def create_professor(request, member_id):
     else:
         form = ProfessorForm()
     return render(request, 'create/create_professor.html', {'form': form})
-
 
 def professors(request):
     professors = Professor.objects.all()
@@ -362,7 +283,6 @@ def delete_course(request, course_id):
         course.delete()
         return redirect('courses')
     return render(request, 'delete/delete_course.html', {'course': course})
-
 
 def course_list(request):
     courses = Course.objects.all()
@@ -515,6 +435,8 @@ def delete_invite_request(request, invite_request_id):
         invite_request.delete()
         return redirect('invite_requests')
     return render(request, 'delete/delete_invite_request.html', {'invite_request': invite_request})
+
+
 
 # # Group Activities views
 # def create_group_activities(request):
