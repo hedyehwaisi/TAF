@@ -1,22 +1,131 @@
+{#<!DOCTYPE html>#}
+{#<html>#}
+{#<head>#}
+{#    <title>Invite Requests List</title>#}
+{#    <style>#}
+{#        .message {#}
+{#            font-size: 1.2em;#}
+{#            color: red;#}
+{#            margin-top: 20px;#}
+{#        }#}
+{#        table {#}
+{#            width: 100%;#}
+{#            border-collapse: collapse;#}
+{#            margin-top: 20px;#}
+{#        }#}
+{#        th, td {#}
+{#            padding: 10px;  /* Add padding to table cells */#}
+{#            border: 1px solid #ddd;  /* Add border to table cells */#}
+{#            text-align: left;  /* Align text to the left */#}
+{#        }#}
+{#        th {#}
+{#            background-color: #f2f2f2;  /* Add background color to table header */#}
+{#        }#}
+{#        tr:nth-child(even) {#}
+{#            background-color: #f9f9f9;  /* Add background color to even table rows */#}
+{#        }#}
+{#    </style>#}
+{#</head>#}
+{#<body>#}
+{#    <h2>Invite Requests List</h2>#}
+{#    {% if invite_requests %}#}
+{#    <table>#}
+{#        <thead>#}
+{#            <tr>#}
+{#                <th>Requester Name</th>#}
+{#                <th>Request Date</th>#}
+{#                <th>Status</th>#}
+{#                <th>Actions</th>#}
+{#            </tr>#}
+{#        </thead>#}
+{#        <tbody>#}
+{#            {% for invite_request in invite_requests %}#}
+{#            <tr>#}
+{#                <td>{{ invite_request.requester_name }}</td>#}
+{#                <td>{{ invite_request.request_date }}</td>#}
+{#                <td>{{ invite_request.status }}</td>#}
+{#                <td>#}
+{#                    <a href="{% url 'edit_invite_request' invite_request.id %}">Edit</a>#}
+{#                    <a href="{% url 'delete_invite_request' invite_request.id %}">Delete</a>#}
+{#                </td>#}
+{#            </tr>#}
+{#            {% endfor %}#}
+{#        </tbody>#}
+{#    </table>#}
+{#    {% else %}#}
+{#        <p class="message"><strong>No invite requests have been submitted.</strong></p>#}
+{#    {% endif %}#}
+{##}
+{#    <ul>#}
+{#        <li><a href="{% url 'create_invite_request' %}">Add New Invite or Request</a></li>#}
+{#        <li><a href="{% url 'lists' %}">Back to Lists</a></li>#}
+{#    </ul>#}
+{#</body>#}
+{#</html>#}
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>Invite Requests List</title>
+    <style>
+        .message {
+            font-size: 1.2em;
+            color: red;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;  /* Add padding to table cells */
+            border: 1px solid #ddd;  /* Add border to table cells */
+            text-align: left;  /* Align text to the left */
+        }
+        th {
+            background-color: #f2f2f2;  /* Add background color to table header */
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;  /* Add background color to even table rows */
+        }
+    </style>
 </head>
 <body>
 <h2>Invite Requests List</h2>
-<ul>
-    {% for invite_request in invite_request %}
-    <li>
-        {{ invite_request }}
-        <a href="{% url 'edit_invite_request' invite_request.id %}">Edit</a>
-        <a href="{% url 'delete_invite_request' invite_request.id %}">Delete</a>
-    </li>
-    {% endfor %}
-</ul>
-<ul>
-    <li><a href="{% url 'create_invite_request' %}">Add New Invite or Request</a></li>
-    <li><a href="{% url 'lists' %}">Back to Lists</a></li>
-</ul>
+
+
+<table>
+        <thead>
+            <tr>
+                <th>Requester Name</th>
+                <th>Request Date</th>
+                <th>ta_request_accepted / prof_invite_accepted</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for invite_request in invite_requests %}
+            <tr>
+                <td>{{ invite_request.ta }}</td>
+                <td>{{ invite_request.group }}</td>
+                <td>{{ invite_request.ta_request_accepted }} / {{ invite_request.prof_invite_accepted }}</td>
+                <td>
+                    <a href="{% url 'edit_invite_request' invite_request.id %}">Edit</a>
+                    <a href="{% url 'delete_invite_request' invite_request.id %}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if not invite_requests %}
+        <p class="message"><strong>No invite requests have been submitted.</strong></p>
+    {% endif %}
+
+    <ul>
+        <li><a href="{% url 'create_invite_request' %}">Add New Invite or Request</a></li>
+        <li><a href="{% url 'lists' %}">Back to Lists</a></li>
+    </ul>
+
 </body>
 </html>

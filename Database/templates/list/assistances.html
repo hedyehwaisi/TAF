@@ -1,21 +1,125 @@
+{#<!DOCTYPE html>#}
+{#<html>#}
+{#<head>#}
+{#    <title>Teaching Assistants</title>#}
+{#    <style>#}
+{#        .message {#}
+{#            font-size: 1.2em;#}
+{#            color: red;#}
+{#            margin-top: 20px;#}
+{#        }#}
+{#        table {#}
+{#            width: 100%;#}
+{#            border-collapse: collapse;#}
+{#            margin-top: 20px;#}
+{#        }#}
+{#        th, td {#}
+{#            padding: 10px;  /* Add padding to table cells */#}
+{#            border: 1px solid #ddd;  /* Add border to table cells */#}
+{#            text-align: left;  /* Align text to the left */#}
+{#        }#}
+{#        th {#}
+{#            background-color: #f2f2f2;  /* Add background color to table header */#}
+{#        }#}
+{#        tr:nth-child(even) {#}
+{#            background-color: #f9f9f9;  /* Add background color to even table rows */#}
+{#        }#}
+{#    </style>#}
+{#</head>#}
+{#<body>#}
+{#    <h2>Teaching Assistants</h2>#}
+{#    {% if assistances %}#}
+{#    <table>#}
+{#        <thead>#}
+{#            <tr>#}
+{#                <th>Member ID</th>#}
+{#                <th>Name</th>#}
+{#                <th>Actions</th>#}
+{#            </tr>#}
+{#        </thead>#}
+{#        <tbody>#}
+{#            {% for ta in assistances %}#}
+{#            <tr>#}
+{#                <td>{{ ta.member.member_id }}</td>#}
+{#                <td>{{ ta.member.first_name }} {{ ta.member.last_name }}</td>#}
+{#                <td>{{ ta.member.year}}</td>#}
+{#                <td>#}
+{#                    <a href="{% url 'edit_member' ta.member.pk %}">Edit</a>#}
+{#                    <a href="{% url 'delete_member' ta.member.pk %}">Delete</a>#}
+{#                </td>#}
+{#            </tr>#}
+{#            {% endfor %}#}
+{#        </tbody>#}
+{#    </table>#}
+{#    {% else %}#}
+{#        <p class="message"><strong>No teaching assistants have been submitted.</strong></p>#}
+{#    {% endif %}#}
+{##}
+{#    <ul>#}
+{#        <li><a href="{% url 'create_assistance' %}">Add New Assistance</a></li>#}
+{#        <li><a href="{% url 'lists' %}">Back to Lists</a></li>#}
+{#    </ul>#}
+{#</body>#}
+{#</html>#}
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>Assistances List</title>
+    <style>
+        .message {
+            font-size: 1.2em;
+            color: red;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;  /* Add padding to table cells */
+            border: 1px solid #ddd;  /* Add border to table cells */
+            text-align: left;  /* Align text to the left */
+        }
+        th {
+            background-color: #f2f2f2;  /* Add background color to table header */
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;  /* Add background color to even table rows */
+        }
+    </style>
 </head>
 <body>
 <h2>Assistances List</h2>
+{% if not assistances %}
+    <p class="message"><strong>No teaching assistants have been submitted.</strong></p>
+{% endif %}
+<table>
+    <thead>
+        <tr>
+            <th>Member ID</th>
+            <th>Name</th>
+            <th>Group</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for assistance in assistances %}
+        <tr>
+            <td>{{ assistance.ta.member.member_id }}</td>
+            <td>{{ assistance.ta.member.first_name }} {{ assistance.ta.member.last_name }}</td>
+            <td>{{ assistance.group }}</td>
+            <td>
+                <a href="{% url 'edit_assistance' assistance.id %}">Edit</a>
+                <a href="{% url 'delete_assistance' assistance.id %}">Delete</a>    
+            </td>
+        </tr>
+        {% endfor %}
+</table>
 <ul>
-    {% for assistance in assistances %}
-    <li>
-        {{ assistance }}
-        <a href="{% url 'edit_assistance' assistance.id %}">Edit</a>
-        <a href="{% url 'delete_assistance' assistance.id %}">Delete</a>
-    </li>
-    {% endfor %}
-</ul>
-<a href="{% url 'create_assistance' %}">Add New Assistance</a>
-</br>
-<a href="{% url 'lists' %}">Back to Lists</a>
+        <li><a href="{% url 'create_assistance' %}">Add New Assistace</a></li>
+        <li><a href="{% url 'lists' %}">Back to Lists</a></li>
+    </ul>
 </body>
 </html>

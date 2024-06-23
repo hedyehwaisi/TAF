@@ -2,9 +2,33 @@
 <html>
 <head>
     <title>Groups</title>
+    <style>
+        .message {
+            font-size: 1.2em;
+            color: red;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;  /* Add padding to table cells */
+            border: 1px solid #ddd;  /* Add border to table cells */
+            text-align: left;  /* Align text to the left */
+        }
+        th {
+            background-color: #f2f2f2;  /* Add background color to table header */
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;  /* Add background color to even table rows */
+        }
+    </style>
 </head>
 <body>
     <h2>Groups</h2>
+    {% if groups %}
     <table>
         <thead>
             <tr>
@@ -14,6 +38,7 @@
                 <th>Department</th>
                 <th>Semester</th>
                 <th>Year</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -25,7 +50,6 @@
                 <td>{{ group.department }}</td>
                 <td>{{ group.semester }}</td>
                 <td>{{ group.year }}</td>
-                
                 <td>
                     <a href="{% url 'edit_group' group.id %}">Edit</a>
                     <a href="{% url 'delete_group' group.id %}">Delete</a>
@@ -34,12 +58,13 @@
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+        <p class="message"><strong>No groups have been submitted.</strong></p>
+    {% endif %}
 
     <ul>
         <li><a href="{% url 'create_group' %}">Add New Group</a></li>
         <li><a href="{% url 'lists' %}">Back to Lists</a></li>
     </ul>
-
-    
 </body>
 </html>

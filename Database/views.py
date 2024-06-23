@@ -3,6 +3,8 @@ from .forms import MemberForm, MemberPhoneForm, MemberEmailForm, StudentForm, Pr
     GroupForm, AssistanceForm, GradeForm, GroupActivitiesForm, InviteRequestForm, MemberSearchForm, PhoneFormSet
 from .models import Member, Student, TA, Professor, Course, Group, Assistance, Grade, InviteRequest, MemberPhone, MemberEmail
 from django.db.models import Q
+from django.db import IntegrityError
+
 
 
 # Homepage view
@@ -69,18 +71,24 @@ def create_member(request):
         member_form = MemberForm(request.POST)
         email_form = MemberEmailForm(request.POST)
         phone_formset = PhoneFormSet(request.POST, queryset=MemberPhone.objects.none())
-        
+
         if member_form.is_valid() and email_form.is_valid() and phone_formset.is_valid():
             member = member_form.save()
             email = email_form.save(commit=False)
             email.member = member
             email.save()
-            
+
             for phone_form in phone_formset:
-                phone = phone_form.save(commit=False)
-                phone.member = member
-                phone.save()
-                
+                try:
+                    phone = phone_form.save(commit=False)
+                    phone.member = member
+                    phone.save()
+                except IntegrityError:
+                    # Handle the case where the phone number already exists
+                    # For example, you can add an error to the formset
+                    phone_form.add_error(None, "Phone number already exists.")
+                    # Rollback the transaction or handle the error as needed
+
             if member.role == 'student':
                 return redirect('create_student', member_id=member.member_id)
             elif member.role == 'ta':
@@ -91,7 +99,7 @@ def create_member(request):
         member_form = MemberForm()
         email_form = MemberEmailForm()
         phone_formset = PhoneFormSet(queryset=MemberPhone.objects.none())
-        
+
     return render(request, 'create/create_member.html', {
         'member_form': member_form,
         'email_form': email_form,

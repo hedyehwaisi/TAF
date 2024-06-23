@@ -2,9 +2,33 @@
 <html>
 <head>
     <title>Students</title>
+    <style>
+        .message {
+            font-size: 1.2em;
+            color: red;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;  /* Add padding to table cells */
+            border: 1px solid #ddd;  /* Add border to table cells */
+            text-align: left;  /* Align text to the left */
+        }
+        th {
+            background-color: #f2f2f2;  /* Add background color to table header */
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;  /* Add background color to even table rows */
+        }
+    </style>
 </head>
 <body>
     <h2>Students</h2>
+    {% if students %}
     <table>
         <thead>
             <tr>
@@ -13,6 +37,7 @@
                 <th>GPA</th>
                 <th>Major</th>
                 <th>Entry Year</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -23,7 +48,6 @@
                 <td>{{ student.gpa }}</td>
                 <td>{{ student.major }}</td>
                 <td>{{ student.entry_year }}</td>
-
                 <td>
                     <a href="{% url 'edit_member' student.member.pk %}">Edit</a>
                     <a href="{% url 'delete_member' student.member.pk %}">Delete</a>
@@ -32,6 +56,9 @@
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+        <p class="message"><strong>No students have been submitted.</strong></p>
+    {% endif %}
 
     <ul>
         <li><a href="{% url 'create_member' %}">Add New Member</a></li>

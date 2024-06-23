@@ -104,6 +104,7 @@ class TA(models.Model):
     member = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True)
     score = models.IntegerField(default=0)
 
+
     @property
     def computed_id(self):
         return f"{self.member.member_id}03"
@@ -167,7 +168,7 @@ class Assistance(models.Model):
         unique_together = (('ta', 'group'),)
 
     def save(self, *args, **kwargs):
-        self.year_semester = f"{self.year}{self.semester}"
+        self.year_semester = f"{self.group.year}{self.group.semester}"
         super().save(*args, **kwargs)
 
     def __str__(self):

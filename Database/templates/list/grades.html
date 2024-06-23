@@ -2,21 +2,61 @@
 <html>
 <head>
     <title>Grades List</title>
+    <style>
+        .message {
+            font-size: 1.2em;
+            color: red;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;  /* Add padding to table cells */
+            border: 1px solid #ddd;  /* Add border to table cells */
+            text-align: left;  /* Align text to the left */
+        }
+        th {
+            background-color: #f2f2f2;  /* Add background color to table header */
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;  /* Add background color to even table rows */
+        }
+    </style>
 </head>
 <body>
-<h2>Grades List</h2>
-<ul>
-    {% for grade in grades %}
-    <li>
-        {{ grade }}
-        <a href="{% url 'edit_grade' grade.id %}">Edit</a>
-        <a href="{% url 'delete_grade' grade.id %}">Delete</a>
-    </li>
-    {% endfor %}
-</ul>
-<ul>
-    <li><a href="{% url 'create_grade' %}">Add New Grade</a></li>
-    <li><a href="{% url 'lists' %}">Back to Lists</a></li>
-</ul>
+    <h2>Grades List</h2>
+    {% if grades %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Grade</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for grade in grades %}
+            <tr>
+                <td>{{ grade.id }}</td>
+                <td>{{ grade }}</td>
+                <td>
+                    <a href="{% url 'edit_grade' grade.id %}">Edit</a>
+                    <a href="{% url 'delete_grade' grade.id %}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p class="message"><strong>No grades have been submitted.</strong></p>
+    {% endif %}
+
+    <ul>
+        <li><a href="{% url 'create_grade' %}">Add New Grade</a></li>
+        <li><a href="{% url 'lists' %}">Back to Lists</a></li>
+    </ul>
 </body>
 </html>
